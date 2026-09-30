@@ -133,7 +133,8 @@ function ImportCategoryBudget({ budgetId, budget, budgetAmount, categoryBudget, 
             name: name,
             current: b.budget,
             imported: selectList[key].budget,
-            bid: selectList[key]._id,
+            obid: selectList[key]._id,
+            bid: b._id,
             cid: b.category._id
           });
         }
@@ -176,7 +177,7 @@ function ImportCategoryBudget({ budgetId, budget, budgetAmount, categoryBudget, 
     if(isOverride === 2) { // duplicates available but do not override previous data
       let newObj = {...selectList};
       for(let ele of dupList) {
-        let id = ele.bid;
+        let id = ele.obid;
         delete newObj[id];
       }
       data.elements = dataGenerator(newObj);
