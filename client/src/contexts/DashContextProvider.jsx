@@ -51,6 +51,7 @@ function DashContextProvider({ children }) {
         withCredentials: true
       });
       setUserData(response.data.userData);
+      console.log(response.data.userData);
       return response.data.userData.id;
     } catch (err) {
       console.log(err);

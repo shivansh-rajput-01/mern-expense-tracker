@@ -129,6 +129,8 @@ function BudgetAnalysis() {
         setImportModal(false);
         setMessage(response.data.message);
         setBudget(response.data.budget);
+      } else {
+        setImportModal(false);
       }
     } catch (err) {
       console.log(err);
