@@ -15,6 +15,7 @@ import Category from './components/Category.jsx'
 import Budget from './components/Budget.jsx'
 import BudgetList from './components/BudgetList.jsx'
 import BudgetAnalysis from './components/BudgetAnalysis.jsx'
+import Profile from './components/Profile.jsx'
 
 const router = createBrowserRouter([
   {
@@ -66,6 +67,10 @@ const router = createBrowserRouter([
       {
         path: "analyse/budget/:budgetId",
         element: <BudgetAnalysis />
+      },
+      {
+        path: "profile",
+        element: <Profile />
       }
     ]
   }

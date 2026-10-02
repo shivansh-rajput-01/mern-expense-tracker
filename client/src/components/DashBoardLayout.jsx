@@ -11,6 +11,7 @@ function DashBoardLayout() {
     const {del, setDel, setCategory} = useContext(dashContext);
     let [message, setMessage] = useState("");
     let [error, setError] = useState("");
+    let [openSideBar, setOpenSideBar] = useState(false);
 
     if(loading){
         return (
@@ -42,7 +43,12 @@ function DashBoardLayout() {
     }
 
     return (
-        <div className='w-full'>
+        <div className='w-full relative dark:bg-linear-to-br dark:from-slate-950 dark:via-blue-950 dark:to-slate-900'>
+            <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 hidden overflow-hidden dark:block">
+                <div className="absolute -top-20 left-1/3 h-72 w-72 rounded-full bg-blue-600/30 blur-3xl" />
+                <div className="absolute bottom-0 right-10 h-72 w-72 rounded-full bg-orange-500/20 blur-3xl" />
+                <div className="absolute top-1/2 left-0 h-64 w-64 rounded-full bg-cyan-500/20 blur-3xl" />
+            </div>
         {
             username? <div className="dashboard w-full h-full relative">
                 {
@@ -71,9 +77,9 @@ function DashBoardLayout() {
                         </div>
                     )
                 }
-                <DashNav />
-                <div className="main flex w-full pt-16 h-screen">
-                    <Sidebar />
+                <DashNav openSideBar={openSideBar} setOpenSideBar={setOpenSideBar} />
+                <div className="relative main flex w-full pt-16 h-screen">
+                    <Sidebar openSideBar={openSideBar} setOpenSideBar={setOpenSideBar}/>
                     <Outlet context={{message, setMessage}}/>
                 </div>
             </div> : <Navigate to="/login" replace/>

@@ -109,7 +109,7 @@ function ListExpenses() {
   }, [userData]);
 
   return (
-    <div className="relative bg-slate-100 flex flex-col max-h-full overflow-y-auto pt-4 w-[75%]">
+    <div className="relative bg-slate-100 dark:bg-linear-to-br dark:from-slate-950 dark:via-blue-950 dark:to-slate-900 flex flex-col min-h-full overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] scrollbar-none pt-4 w-full md:w-[75%]">
       {message && (
         <div className="absolute top-4 left-1/2 min-w-64 min-h-10 -translate-x-1/2 p-2 flex justify-between bg-green-400 text-white">
           <div className="message">{message}</div>
@@ -124,7 +124,7 @@ function ListExpenses() {
         </div>
       )}
       {del && (
-        <div className="absolute w-full h-full top-0 bg-black/50 backdrop-blur-sm flex justify-center items-center z-1000">
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex justify-center items-center z-1000">
           <div className="del-box flex flex-col w-80 min-h-40 p-8 bg-white rounded-md">
             <div className="msg mb-4">
               <i className="fa-solid fa-triangle-exclamation"></i>
@@ -148,7 +148,7 @@ function ListExpenses() {
         </div>
       )}
       {edit && (
-        <div className="absolute w-full h-full top-0 bg-black/50 backdrop-blur-sm flex justify-center items-center z-1000">
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex justify-center items-center z-1000">
           <div className="del-box flex flex-col w-80 min-h-40 p-8 bg-white rounded-md relative">
             <i
               className="fa-solid fa-xmark absolute top-3 right-2 text-slate-500"
@@ -206,14 +206,14 @@ function ListExpenses() {
           </div>
         </div>
       )}
-      {!expenses && <div>No expenses added yet</div>}
+      {!expenses && <div className="dark:text-white">No expenses added yet</div>}
       {expenses && (
-        <>
-          <div className="w-[94%] mx-auto h-100 my-4 flex flex-col">
+        <div className="flex flex-col">
+          <div className="w-[94%] mx-auto min-h-100 my-4 flex flex-col">
             <SearchBudget budgetExpenses={expenses} />
           </div>
-          <div className="w-[90%] mx-auto overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] scrollbar-none">
-            <div className="w-full mx-auto flex justify-around bg-white border-b border-b-slate-300 hover:bg-slate-50">
+          <div className="w-[90%] min-h-100 max-h-150 mx-auto overflow-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] scrollbar-none">
+            <div className="w-140 sm:w-full mx-auto flex justify-around bg-white dark:bg-white/5 dark:text-slate-100 border-b border-b-slate-300 dark:border-b-slate-700 hover:bg-slate-50 dark:hover:bg-white/1">
               <div className="w-[20%] rounded-sm p-4 text-center font-bold">
                 Date
               </div>
@@ -234,7 +234,7 @@ function ListExpenses() {
               return (
                 <div
                   key={exp._id}
-                  className="w-full mx-auto flex justify-around bg-white border-b border-b-slate-300 hover:bg-slate-50"
+                  className="w-140 sm:w-full mx-auto flex justify-around bg-white border-b dark:bg-white/5 dark:text-slate-100 border-b-slate-300 dark:border-b-slate-700 hover:bg-slate-50 dark:hover:bg-white/1"
                 >
                   <div className="w-[20%] rounded-sm p-4 text-center font-bold">
                     {displayDate(exp.date.toString().slice(0, 10))}
@@ -269,7 +269,7 @@ function ListExpenses() {
               );
             })}
           </div>
-        </>
+        </div>
       )}
     </div>
   );

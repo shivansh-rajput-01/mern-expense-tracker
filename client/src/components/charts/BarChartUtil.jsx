@@ -41,6 +41,7 @@ function BarChartUtil({ data }) {
           formatter={(value, name) =>
             name === "Average Expense" ? `₹${value.toLocaleString()}` : value
           }
+          cursor={false}
         />
         <Legend />
         <Bar
@@ -49,6 +50,7 @@ function BarChartUtil({ data }) {
           fill="#0000ff"
           name="Average Expense"
           radius={[4, 4, 0, 0]}
+          activeBar={{ fill: '#0000ff', stroke: 'none' }}
         />
         <Bar
           yAxisId="right"
@@ -56,6 +58,7 @@ function BarChartUtil({ data }) {
           fill="#00ff00"
           name="No of Expenses"
           radius={[4, 4, 0, 0]}
+          activeBar={{ fill: '#00ff00', stroke: 'none' }}
         />
       </BarChart>
     </ResponsiveContainer>

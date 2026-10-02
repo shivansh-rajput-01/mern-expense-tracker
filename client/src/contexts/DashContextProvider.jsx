@@ -11,6 +11,13 @@ function DashContextProvider({ children }) {
   let [admin, setAdmin] = useState("");
   let [del, setDel] = useState("");
   let [budget, setBudget] = useState("");
+  let [darkMode, setDarkMode] = useState(() => {
+    const saved = localStorage.getItem("theme");
+    if(saved) {
+      return saved === "dark"
+    }
+    return window.matchMedia("(prefers-color-scheme: dark)").matches;
+  });
 
   async function getAdmin() {
     try {
@@ -63,8 +70,19 @@ function DashContextProvider({ children }) {
     }
   }, [username]);
 
+  useEffect(() => {
+    const root = document.documentElement;
+    if(darkMode) {
+      root.classList.add("dark");
+      localStorage.setItem("theme", "dark");
+    } else {
+      root.classList.remove("dark");
+      localStorage.setItem("theme", "light");
+    }
+  }, [darkMode]);
+
   return (
-    <dashContext.Provider value={{ userData, setUserData, category, setCategory, admin, del, setDel, budget, setBudget }}>
+    <dashContext.Provider value={{ userData, setUserData, category, setCategory, admin, del, setDel, budget, setBudget, darkMode, setDarkMode }}>
       {children}
     </dashContext.Provider>
   )

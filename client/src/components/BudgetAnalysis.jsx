@@ -12,6 +12,10 @@ import expenseToBudget from "../utils/BudgetVsExpense";
 import LineChartUtil from "./charts/LineChartUtil";
 import SearchBudget from "./SearchBudget";
 import ImportCategoryBudget from "./ImportCategoryBudget";
+import SimpleCard from "./BudgetAnalyzer/SimpleCard";
+import CategoryWiseExpenses from "./BudgetAnalyzer/CategoryWiseExpenses";
+import CategoryWiseViewer from "./BudgetAnalyzer/CategoryWiseViewer";
+import AddCategory from "./BudgetAnalyzer/AddCategory";
 
 function BudgetAnalysis() {
   let [budgetExpenses, setBudgetExpenses] = useState("");
@@ -114,10 +118,14 @@ function BudgetAnalysis() {
 
   async function bulkImport(payload) {
     try {
-      const response = await axios.post(`http://localhost:3000/budget/category/bulk?bid=${budgetId}`, payload, {
-        withCredentials: true
-      });
-      if(response.data.success) {
+      const response = await axios.post(
+        `http://localhost:3000/budget/category/bulk?bid=${budgetId}`,
+        payload,
+        {
+          withCredentials: true,
+        },
+      );
+      if (response.data.success) {
         setImportModal(false);
         setMessage(response.data.message);
         setBudget(response.data.budget);
@@ -185,7 +193,7 @@ function BudgetAnalysis() {
   }
 
   return (
-    <div className="relative w-[75%] pl-4 bg-slate-100 max-h-full overflow-y-auto pt-4 flex flex-col overflow-x-hidden [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] scrollbar-none">
+    <div className="relative w-full md:w-[75%] bg-slate-100 dark:bg-linear-to-br dark:from-slate-950 dark:via-blue-950 dark:to-slate-900 max-h-full overflow-y-auto pt-4 flex flex-col overflow-x-hidden [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] scrollbar-none">
       {message && (
         <div className="absolute top-4 left-1/2 min-w-64 min-h-10 -translate-x-1/2 p-2 flex justify-between bg-green-400 text-white z-100">
           <div className="message">{message}</div>
@@ -200,7 +208,7 @@ function BudgetAnalysis() {
         </div>
       )}
       {error && (
-        <div className="absolute w-full h-full top-0 left-0 bg-black/50 backdrop-blur-sm flex justify-center items-center z-10000">
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex justify-center items-center z-10000">
           <div className="del-box flex flex-col w-80 min-h-40 p-8 bg-white rounded-md">
             <div className="msg mb-4">
               <i className="fa-solid fa-triangle-exclamation"></i>
@@ -223,7 +231,7 @@ function BudgetAnalysis() {
         </div>
       )}
       {importModal && (
-        <div className="absolute w-full h-full top-0 left-0 bg-black/50 backdrop-blur-sm flex justify-center items-center z-1000">
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex justify-center items-center z-1000">
           <div className="del-box flex flex-col w-90 min-h-40 p-8 bg-white rounded-md relative">
             <i
               className="fa-solid fa-xmark absolute top-3 right-2 text-slate-500"
@@ -240,7 +248,7 @@ function BudgetAnalysis() {
         </div>
       )}
       {delModal && (
-        <div className="absolute w-full h-full top-0 bg-black/50 backdrop-blur-sm flex justify-center items-center z-1000">
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex justify-center items-center z-1000">
           <div className="del-box flex flex-col w-80 min-h-40 p-8 bg-white rounded-md">
             <div className="msg mb-4">
               <i className="fa-solid fa-triangle-exclamation"></i>
@@ -264,7 +272,7 @@ function BudgetAnalysis() {
         </div>
       )}
       {editModal && (
-        <div className="absolute w-full h-full top-0 bg-black/50 backdrop-blur-sm flex justify-center items-center z-1000">
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex justify-center items-center z-1000">
           <div className="del-box flex flex-col w-80 min-h-40 p-8 bg-white rounded-md relative">
             <i
               className="fa-solid fa-xmark absolute top-3 right-2 text-slate-500"
@@ -296,33 +304,33 @@ function BudgetAnalysis() {
           </div>
         </div>
       )}
-      <div className="text-white p-2 bg-linear-to-r from-pink-500 via-purple-500 to-indigo-500 rounded-sm flex justify-between mx-2 relative">
+      <div className="text-white p-2 mx-4 bg-linear-to-r from-pink-500 via-purple-500 to-indigo-500 rounded-sm flex justify-between  relative">
         <span>Budget Analysis: {budget.name}</span>
         <span onClick={() => setOpenMenu((e) => !e)}>
           <i className="fa-solid fa-ellipsis-vertical absolute top-3 right-1"></i>
         </span>
         {openMenu && (
-          <div className="absolute right-0 top-8 min-h-40 min-w-40 bg-white shadow-md rounded-md flex flex-col">
+          <div className="absolute right-0 top-8 min-h-40 min-w-40 bg-white dark:bg-blue-950 dark:text-slate-100 shadow-md rounded-md flex flex-col">
             <span
-              className="block w-full text-black p-2 border-b border-b-slate-200 hover:bg-slate-100 rounded-md selection:bg-white"
+              className="block w-full text-black dark:text-slate-100 p-2 border-b border-b-slate-200 hover:bg-slate-100 dark:border-b-slate-700 dark:hover:bg-blue-900 rounded-md selection:bg-white dark:selection:bg-blue-950"
               onClick={() => displayTab("analysis")}
             >
               Analytics
             </span>
             <span
-              className="block w-full text-black p-2 border-b border-b-slate-200 hover:bg-slate-100 rounded-md selection:bg-white"
+              className="block w-full text-black dark:text-slate-100 p-2 border-b border-b-slate-200 hover:bg-slate-100 dark:border-b-slate-700 dark:hover:bg-blue-900 rounded-md selection:bg-white dark:selection:bg-blue-950"
               onClick={() => displayTab("add")}
             >
               Manage Category Budget
             </span>
             <span
-              className="block w-full text-black p-2 border-b border-b-slate-200 hover:bg-slate-100 rounded-md selection:bg-white"
+              className="block w-full text-black dark:text-slate-100 p-2 border-b border-b-slate-200 hover:bg-slate-100 dark:border-b-slate-700 dark:hover:bg-blue-900 rounded-md selection:bg-white dark:selection:bg-blue-950"
               onClick={() => displayTab("view")}
             >
               View Category Budget
             </span>
             <span
-              className="block w-full text-black p-2 border-b border-b-slate-200 hover:bg-slate-100 rounded-md selection:bg-white"
+              className="block w-full text-black dark:text-slate-100 p-2 border-b border-b-slate-200 hover:bg-slate-100 dark:border-b-slate-700 dark:hover:bg-blue-900 rounded-md selection:bg-white dark:selection:bg-blue-950"
               onClick={() => displayTab("search")}
             >
               Search
@@ -330,9 +338,9 @@ function BudgetAnalysis() {
           </div>
         )}
       </div>
-      <div className="budget flex justify-between">
-        <div className="rounded-sm shadow-md bg-white my-2 w-60 h-36 flex flex-col justify-center items-center hover:shadow-lg">
-          <span className="text-slate-800 text-2xl block mb-2">Budget</span>
+      <div className="budget flex flex-wrap gap-4 my-2 mx-4">
+        <div className="rounded-sm shadow-md bg-white dark:bg-white/5 dark:text-white  w-full sm:w-60 h-36 flex flex-col justify-center items-center hover:shadow-lg">
+          <span className="text-slate-800 dark:text-white text-2xl block mb-2">Budget</span>
           <div className="flex justify-around w-[80%]">
             <span>₹ {budget.budgetMoney}</span>
             <span onClick={() => setEdit((e) => !e)}>
@@ -361,128 +369,33 @@ function BudgetAnalysis() {
           )}
         </div>
         {menuActive === "add" && (
-          <div className="flex-1 bg-white flex flex-col items-center rounded-md shadow-md h-36 my-2 mx-4">
-            <div className="self-start flex justify-between text-xl py-4 px-4 mb-4 border-b border-b-slate-200 w-full">
-              <span>Add Category Budgets</span>
-              <button
-                className="border text-sm w-20 h-8 rounded-sm hover:shadow-md hover:bg-slate-950 hover:text-white"
-                onClick={() => setImportModal(true)}
-              >
-                <i className="fa-solid fa-download"></i> import
-              </button>
-            </div>
-            <form
-              className="w-full flex justify-around"
-              onSubmit={addCategoryBudget}
-            >
-              <select
-                id="category"
-                className="outline rounded-sm h-10 p-2 focus:outline-4 focus:outline-blue-400"
-                value={budgetCategory}
-                onChange={(e) => setBudgetCategory(e.target.value)}
-                required
-              >
-                <option value="" selected disabled>
-                  Choose Category
-                </option>
-                {category &&
-                  category.map((cat) => {
-                    return (
-                      <option key={cat._id} value={cat._id}>
-                        {cat.name}
-                      </option>
-                    );
-                  })}
-              </select>
-              <input
-                type="number"
-                placeholder="Category Budget"
-                className="outline rounded-sm h-10 p-2 focus:outline-4 focus:outline-blue-400"
-                value={budgetCategoryAmount}
-                onChange={(e) => setBudgetCategoryAmount(e.target.value)}
-                required
-              />
-              <button className="bg-slate-900 text-white w-20 h-10 rounded-sm">
-                Add
-              </button>
-            </form>
-          </div>
+          <AddCategory
+            setImportModal={setImportModal}
+            setBudgetCategory={setBudgetCategory}
+            addCategoryBudget={addCategoryBudget}
+            budgetCategory={budgetCategory}
+            budgetCategoryAmount={budgetCategoryAmount}
+            setBudgetCategoryAmount={setBudgetCategoryAmount}
+          />
         )}
         {menuActive === "view" && (
-          <div className="flex-1 bg-white flex flex-col items-center rounded-md shadow-md h-36 my-2 mx-4">
-            <div className="self-start text-xl flex justify-between py-1 px-4 border-b border-b-slate-200 w-full">
-              <span>View Category Budgets</span>
-              {budget.budgetCategory?.length > 0 && (
-                <span>{`₹ ${subTotal(budget.budgetCategory).toLocaleString()} alloted`}</span>
-              )}
-            </div>
-            <div className="w-full flex-1 overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] scrollbar-none">
-              <div className="w-full border-b border-b-slate-200 flex justify-between p-2">
-                <span className="w-[30%] text-center font-black">Category</span>
-                <span className="w-[30%] text-center font-black">Spent</span>
-                <span className="w-[30%] text-center font-black">Budget</span>
-              </div>
-              {expenseToBudget(budget.budgetCategory, catWiseExp).map(
-                (ele, idx) => {
-                  return (
-                    <div
-                      key={idx}
-                      className="w-full border-b border-b-slate-200 flex justify-between p-2"
-                    >
-                      <span className="w-[30%] text-center">
-                        {ele.category}
-                      </span>
-                      <span className="w-[30%] text-center">
-                        ₹{ele.expenditure.toLocaleString()}
-                      </span>
-                      <span className="w-[30%] text-center">
-                        ₹{ele.budget.toLocaleString()}
-                      </span>
-                    </div>
-                  );
-                },
-              )}
-            </div>
-          </div>
+          <CategoryWiseViewer budget={budget} catWiseExp={catWiseExp} />
         )}
         {(menuActive === "analysis" || menuActive === "search") && (
-          <div className="container flex-1 flex h-36 justify-around my-2 mx-2">
-            <div className="cards w-[30%] h-full flex flex-col justify-center items-center bg-white rounded-md shadow-md hover:shadow-lg">
-              <span className="text-2xl my-2">Spent</span>
-              <span>₹{spentAmount.toLocaleString()}</span>
-            </div>
-            <div className="cards w-[30%] h-full flex flex-col justify-center items-center bg-white rounded-md shadow-md hover:shadow-lg">
-              <span className="text-2xl my-2">Remaining</span>
-              <span>
-                ₹{(budget.budgetMoney - spentAmount).toLocaleString()}
-              </span>
-            </div>
-            <div className="cards w-[30%] flex flex-col h-full bg-white rounded-md shadow-md hover:shadow-lg">
-              <span className="block w-full h-12 p-2 border-b border-b-slate-200">
-                Category wise expenditure
-              </span>
-              <div className="flex-1 overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] scrollbar-none">
-                {catWiseExp &&
-                  catWiseExp.map((el) => {
-                    return (
-                      <div
-                        key={el.id}
-                        className="p-2 flex justify-between border-b border-b-slate-200 hover:bg-slate-50"
-                      >
-                        <span>{el.category}</span>
-                        <span>{el.expenditure}</span>
-                      </div>
-                    );
-                  })}
-              </div>
-            </div>
-          </div>
+          <>
+            <SimpleCard amount={spentAmount} message="Spent" />
+            <SimpleCard
+              amount={budget.budgetMoney - spentAmount}
+              message="Remaining"
+            />
+            <CategoryWiseExpenses catWiseExp={catWiseExp} />
+          </>
         )}
       </div>
       {menuActive === "analysis" && budgetExpenses && budgetExpenses.length ? (
-        <div className="flex w-full flex-1 justify-between">
-          <div className="container bg-white w-125 h-80 flex flex-col rounded-md shadow-md my-4">
-            <div className="bg-white rounded-md h-10 p-2 border-b border-b-slate-100 flex justify-between w-full font-bold hover:bg-slate-50">
+        <div className="flex flex-wrap w-full justify-between">
+          <div className="container bg-white dark:bg-white/5 dark:text-white w-full mx-4 xl:w-[46%] 2xl:w-150 h-90 flex flex-col rounded-md shadow-md my-4">
+            <div className="rounded-md h-10 p-2 border-b border-b-slate-100 dark:border-b-slate-700 flex justify-between w-full font-bold hover:bg-slate-50 dark:hover:bg-white/1">
               <span className="w-[20%] text-center">Date</span>
               <span className="w-[20%] text-center">Description</span>
               <span className="w-[20%] text-center">Category</span>
@@ -494,7 +407,7 @@ function BudgetAnalysis() {
                 return (
                   <div
                     key={budgetExpense._id}
-                    className="bg-white rounded-md min-h-10 p-2 border-b border-b-slate-100 flex justify-between w-full hover:bg-slate-50"
+                    className="rounded-md min-h-10 p-2 border-b border-b-slate-100 dark:border-b-slate-700 flex justify-between w-full hover:bg-slate-50 dark:hover:bg-white/1"
                   >
                     <span className="w-[20%] text-center">
                       {displayDate(budgetExpense.date.slice(0, 10))}
@@ -514,23 +427,24 @@ function BudgetAnalysis() {
             </div>
           </div>
 
-          <div className="container bg-white w-125 h-80 rounded-md shadow-md my-4 overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] scrollbar-none">
+          <div className="container bg-white dark:bg-white/5 dark:text-white w-full mx-4 xl:w-[46%] 2xl:w-150 min-h-100 xl:min-h-90 rounded-md shadow-md my-4 overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] scrollbar-none">
             <Doughnut data={catWiseExp} />
           </div>
         </div>
       ) : (
         <>
           {menuActive === "analysis" && (
-              <div>No expenses added yet in this budget</div>
-            )}
+            <div className="dark:text-white">No expenses added yet in this budget</div>
+          )}
         </>
       )}
 
-      {menuActive === "add" && budget.budgetCategory?.length > 0? (
-        <div className="flex w-full flex-1 justify-between">
-          <div className="container bg-white w-125 h-80 flex flex-col rounded-md shadow-md my-4">
-            <>
-              <div className="bg-white rounded-md h-10 p-2 border-b border-b-slate-100 flex justify-between w-full font-bold hover:bg-slate-50">
+      {menuActive === "add" && budget.budgetCategory?.length > 0 ? (
+        <div className="flex flex-wrap w-full gap-4 justify-around">
+          <div className="container bg-white dark:bg-white/5 dark:text-white w-full mx-4 xl:mx-0 xl:w-[46%] overflow-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] scrollbar-none 2xl:w-150 h-90 flex flex-col rounded-md shadow-md my-4">
+            <div className="w-140 sm:w-full">
+              <>
+              <div className="rounded-md h-10 p-2 border-b border-b-slate-100 dark:border-b-slate-700 flex justify-between w-full font-bold hover:bg-slate-50 dark:hover:bg-white/1">
                 <span className="w-[20%] text-center">Category</span>
                 <span className="w-[20%] text-center">Budget</span>
                 <span className="w-[20%] text-center">Options</span>
@@ -540,12 +454,12 @@ function BudgetAnalysis() {
               )}
             </>
 
-            {menuActive === "add" && 
+            {menuActive === "add" &&
               budget.budgetCategory.map((el, idx) => {
                 return (
                   <div
                     key={idx}
-                    className="bg-white rounded-md h-10 p-2 border-b border-b-slate-100 flex justify-between w-full hover:bg-slate-50"
+                    className="rounded-md min-h-10 p-2 border-b border-b-slate-100 dark:border-b-slate-700 flex justify-between w-full hover:bg-slate-50 dark:hover:bg-white/1"
                   >
                     <span className="w-[20%] text-center">
                       {el.category.name}
@@ -572,40 +486,41 @@ function BudgetAnalysis() {
                   </div>
                 );
               })}
+            </div>
           </div>
 
           {menuActive === "add" && budget.budgetCategory?.length > 0 && (
-            <div className="budget container bg-white w-125 h-80 rounded-md shadow-md my-4 overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] scrollbar-none">
+            <div className="budget container bg-white dark:bg-white/5 dark:text-white  w-full mx-4 xl:mx-0 xl:w-[45%] 2xl:w-150 min-h-100 xl:min-h-90 rounded-md shadow-md my-4 overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] scrollbar-none">
               <Doughnut data={catBudget(budget.budgetCategory)} />
             </div>
           )}
         </div>
-      ): (
-        menuActive === "add" && <div>No category budget added yet</div>
+      ) : (
+        menuActive === "add" && <div className="dark:text-white">No category budget added yet</div>
       )}
 
       {menuActive === "view" &&
       budget.budgetCategory &&
       budget.budgetCategory.length > 0 ? (
-        <div className="flex-1 flex justify-between px-4">
-          <div className="left w-125 bg-white rounded-md mx-2">
+        <div className="flex flex-wrap gap-4 my-4 justify-around">
+          <div className="left bg-white dark:bg-white/5 dark:text-orange-500 rounded-md w-full mx-4 xl:mx-0 xl:w-[45%] 2xl:w-150 min-h-90">
             {budget.budgetCategory?.length > 1 && (
               <LineChartUtil
                 data={expenseToBudget(budget.budgetCategory, catWiseExp)}
               />
             )}
             {budget.budgetCategory?.length <= 1 && (
-              <div>Analytics opens with at least two category budget</div>
+              <div className="dark:text-white">Analytics opens with at least two category budget</div>
             )}
           </div>
-          <div className="right w-125 h-full bg-white rounded-md mx-2">
+          <div className="right bg-white dark:bg-white/5 dark:text-white rounded-md w-full mx-4 xl:mx-0 xl:w-[45%] 2xl:w-150 min-h-100 xl:min-h-90">
             {menuActive !== "analysis" && (
               <Doughnut data={catBudget(budget.budgetCategory)} />
             )}
           </div>
         </div>
       ) : (
-        menuActive === "view" && <div>No category budget added yet</div>
+        menuActive === "view" && <div className="dark:text-white">No category budget added yet</div>
       )}
       {menuActive === "search" && (
         <SearchBudget budgetExpenses={budgetExpenses} />

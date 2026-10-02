@@ -46,7 +46,7 @@ function Expense() {
     }
 
     return (
-        <div className='flex justify-center items-center w-[75%] pl-4 bg-slate-100 min-h-full overflow-y-auto pt-4 relative'>
+        <div className='flex justify-center items-center w-full md:w-[75%] p-4 dark:bg-linear-to-br dark:from-slate-950 dark:via-blue-950 dark:to-slate-900 bg-slate-100 min-h-full overflow-y-auto relative'>
             {
                 message && (
                     <div className='absolute top-4 left-1/2 min-w-64 min-h-10 -translate-x-1/2 p-2 flex justify-between bg-green-400 text-white'>
@@ -55,7 +55,7 @@ function Expense() {
                     </div>
                 )
             }
-            <div className="form w-100 bg-white shadow-sm rounded-md flex justify-center p-4">
+            <div className="form w-100 bg-white dark:bg-black/20 dark:text-slate-100 shadow-sm rounded-md flex justify-center p-4">
                 <form onSubmit={handleExpense}>
                     <div className='mb-1 text-2xl'>Add Expense</div>
                     <label htmlFor="description" className="block mb-2 mt-4">Description</label>
@@ -69,14 +69,14 @@ function Expense() {
 
                     <label htmlFor="category" className="block mb-2">Category</label>
                     <select className="outline p-2 rounded-sm w-80 h-10 mb-2 focus:outline-4 focus:outline-blue-400" value={categorys} onChange={(e) => { setCategorys(e.target.value) }} id="category" required>
-                        <option value="" disabled>Choose a category</option>
+                        <option value="" className='dark:bg-slate-950/90' disabled>Choose a category</option>
                         {category && category.map((cat) => {
                             return (
-                                <option key={cat._id} value={cat._id}>{cat.name}</option>
+                                <option key={cat._id} value={cat._id} className='dark:bg-slate-950/90'>{cat.name}</option>
                             )
                         })}
                     </select>
-                    <button className="bg-slate-900 text-white w-80 h-10 p-2 rounded-sm my-4 block selection:bg-sl">Add</button>
+                    <button className="bg-slate-900 dark:bg-purple-950/90 text-white w-80 h-10 p-2 rounded-sm my-4 block selection:bg-sl">Add</button>
                 </form>
             </div>
         </div>

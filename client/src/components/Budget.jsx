@@ -49,7 +49,7 @@ function Budget() {
     }
 
     return (
-        <div className='flex justify-center items-center w-[75%] bg-slate-100 min-h-full overflow-y-auto overflow-x-hidden pt-4 relative'>
+        <div className='flex justify-center items-center w-full md:w-[75%] bg-slate-100 dark:bg-linear-to-br dark:from-slate-950 dark:via-blue-950 dark:to-slate-900 min-h-full overflow-y-auto overflow-x-hidden p-4 relative'>
             {
                 message && (
                     <div className='absolute top-4 left-1/2 min-w-64 min-h-10 -translate-x-1/2 p-2 flex justify-between bg-green-400 text-white'>
@@ -60,7 +60,7 @@ function Budget() {
             }
             {
                 error && (
-                    <div className="absolute w-full h-full top-0 left-0 bg-black/50 backdrop-blur-sm flex justify-center items-center z-1000">
+                    <div className="fixed inset-0 left-0 bg-black/50 backdrop-blur-sm flex justify-center items-center z-1000">
                         <div className="del-box flex flex-col w-80 min-h-40 p-8 bg-white rounded-md">
                             <div className="msg mb-4"><i className="fa-solid fa-triangle-exclamation"></i>{error}</div>
                             <div className="btns flex justify-around">
@@ -71,7 +71,7 @@ function Budget() {
                     </div>
                 )
             }
-            <div className="form w-100 bg-white shadow-sm rounded-md flex justify-center p-4">
+            <div className="form w-100 bg-white shadow-sm rounded-md flex justify-center dark:bg-black/20 dark:text-slate-100 p-4">
                 <form onSubmit={createBudget}>
                     <div className='mb-1 text-2xl'>Create New Budget</div>
                     <label htmlFor="budget-name" className="block mb-2 mt-4">Budget Name</label>
@@ -86,7 +86,7 @@ function Budget() {
                     <label htmlFor="budget" className="block mb-2">Budget</label>
                     <input type="number" placeholder='Budget money(rs)' className="outline p-2 rounded-sm w-80 h-10 mb-2 focus:outline-4 focus:outline-blue-400" value={budget} onChange={(e) => { setBudget(e.target.value) }} id="budget" required />
 
-                    <button className="bg-slate-900 text-white w-80 h-10 p-2 rounded-sm my-4 block selection:bg-sl">Add</button>
+                    <button className="bg-slate-900 dark:bg-purple-950/90 text-white w-80 h-10 p-2 rounded-sm my-4 block selection:bg-sl">Add</button>
                 </form>
             </div>
         </div>
