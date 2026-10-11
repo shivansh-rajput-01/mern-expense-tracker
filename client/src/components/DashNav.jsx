@@ -14,7 +14,7 @@ function DashNav({openSideBar, setOpenSideBar}) {
         navigate("/home");
     }
     function openProfile() {
-        navigate("/profile")
+        navigate("/profile");
     }
   return (
     <div className='w-full h-16 pt-4 px-2 top-0 absolute shadow-sm flex justify-between dark:border-white/10 dark:bg-white/5 dark:text-slate-100 dark:shadow-none dark:backdrop-blur-xl z-100'>

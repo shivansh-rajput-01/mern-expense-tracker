@@ -719,12 +719,18 @@ app.put("/budget", isLoggedIn, async (req, res) => {
 
   const budget = await Budget.findByIdAndUpdate(id, {
     budgetMoney: newBudget,
-  }).populate("budgetCategory");
+  }).populate({
+    path: "budgetCategory",
+    populate: {
+      path: "category",
+      model: "Category",
+    },
+  });
 
   return res.status(200).json({
     success: true,
     message: "updated successfully",
-    budget: { ...budget, budgetMoney: newBudget },
+    budget: { ...budget.toObject(), budgetMoney: newBudget },
   });
 });
 

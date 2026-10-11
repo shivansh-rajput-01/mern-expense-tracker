@@ -15,7 +15,7 @@ function CategoryWiseExpenses({catWiseExp}) {
                 className="p-2 flex justify-between border-b border-b-slate-200 dark:border-b-slate-700 hover:bg-slate-50 dark:hover:bg-white/1"
               >
                 <span>{el.category}</span>
-                <span>{el.expenditure}</span>
+                <span>₹{el.expenditure.toLocaleString()}</span>
               </div>
             );
           })}

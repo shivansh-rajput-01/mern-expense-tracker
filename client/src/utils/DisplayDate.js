@@ -13,7 +13,15 @@ const monthMapper = {
     12: "Dec"
 }
 
-export default function displayDate(dateStr){
+export default function displayDate(dateStr, option = 1){
+    if(option === 2) {
+        const year = dateStr.slice(6, 10);
+        const month = Number(dateStr.slice(3, 5));
+        let fMonth = monthMapper[month];
+        const date = dateStr.slice(0, 2);
+        return `${date} ${fMonth} ${year}`
+        return;
+    }
     const year = dateStr.slice(0, 4);
     const month = Number(dateStr.slice(5, 7));
     let fMonth = monthMapper[month];

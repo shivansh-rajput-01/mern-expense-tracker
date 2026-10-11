@@ -16,6 +16,9 @@ import SimpleCard from "./BudgetAnalyzer/SimpleCard";
 import CategoryWiseExpenses from "./BudgetAnalyzer/CategoryWiseExpenses";
 import CategoryWiseViewer from "./BudgetAnalyzer/CategoryWiseViewer";
 import AddCategory from "./BudgetAnalyzer/AddCategory";
+import * as XLSX from "xlsx";
+import genExcelExpenses from "../utils/ExcelExpenses";
+import sorter from "../utils/ExpenseSorter";
 
 function BudgetAnalysis() {
   let [budgetExpenses, setBudgetExpenses] = useState("");
@@ -34,6 +37,12 @@ function BudgetAnalysis() {
   let [delModal, setDelModal] = useState("");
   let [editModal, setEditModal] = useState("");
   let [importModal, setImportModal] = useState(false);
+  let [interactiveSort, setInteractiveSort] = useState({ // 0 -> inactive, 1 -> descending, 2 -> ascending
+    date: 1,
+    description: 0,
+    category: 0,
+    price: 0,
+  });
   let { budgetId } = useParams();
   const { category } = useContext(dashContext);
 
@@ -105,6 +114,7 @@ function BudgetAnalysis() {
         },
       );
       if (response.data.success) {
+        console.log(response.data.budget);
         setBudget(response.data.budget);
       } else {
         setError(response.data.message);
@@ -192,6 +202,32 @@ function BudgetAnalysis() {
     } catch (err) {
       console.log(err);
     }
+  }
+
+  function downloadExcel() {
+    if(budgetExpenses?.length === 0) {
+      setError("Cannot download excel file as no expenses are added");
+      return;
+    }
+    let data = genExcelExpenses(budgetExpenses);
+    const worksheet = XLSX.utils.json_to_sheet(data);
+    
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Expenses");
+
+    XLSX.writeFile(workbook, `${budget.name}.xlsx`);
+  }
+
+  function changeInteractiveState(option) {
+    let sample = {...interactiveSort};
+    for(let key in sample) {
+      if(key != option) {
+        sample[key] = 0;
+      }
+    }
+    sample[option] = sample[option] === 1 ? 2 : 1;
+    console.log(sample);
+    setInteractiveSort(sample);
   }
 
   return (
@@ -312,7 +348,7 @@ function BudgetAnalysis() {
           <i className="fa-solid fa-ellipsis-vertical absolute top-3 right-1"></i>
         </span>
         {openMenu && (
-          <div className="absolute right-0 top-8 min-h-40 min-w-40 bg-white dark:bg-blue-950 dark:text-slate-100 shadow-md rounded-md flex flex-col">
+          <div className="absolute right-0 top-8 z-10 min-h-40 min-w-40 bg-white dark:bg-blue-950 dark:text-slate-100 shadow-md rounded-md flex flex-col">
             <span
               className="block w-full text-black dark:text-slate-100 p-2 border-b border-b-slate-200 hover:bg-slate-100 dark:border-b-slate-700 dark:hover:bg-blue-900 rounded-md selection:bg-white dark:selection:bg-blue-950"
               onClick={() => displayTab("analysis")}
@@ -336,6 +372,12 @@ function BudgetAnalysis() {
               onClick={() => displayTab("search")}
             >
               Search
+            </span>
+            <span
+              className="block w-full text-black dark:text-slate-100 p-2 border-b border-b-slate-200 hover:bg-slate-100 dark:border-b-slate-700 dark:hover:bg-blue-900 rounded-md selection:bg-white dark:selection:bg-blue-950"
+              onClick={downloadExcel}
+            >
+              Download Excel File
             </span>
           </div>
         )}
@@ -385,10 +427,11 @@ function BudgetAnalysis() {
         )}
         {(menuActive === "analysis" || menuActive === "search") && (
           <>
-            <SimpleCard amount={spentAmount} message="Spent" />
+            <SimpleCard amount={spentAmount} message="Spent" budget={budget.budgetMoney} />
             <SimpleCard
-              amount={budget.budgetMoney - spentAmount}
-              message="Remaining"
+              amount={(budget.budgetMoney - spentAmount) >= 0 ? budget.budgetMoney - spentAmount: spentAmount -  budget.budgetMoney}
+              message={(budget.budgetMoney - spentAmount) >= 0 ? "Remaining": "Extra Spent"}
+              budget={budget.budgetMoney}
             />
             <CategoryWiseExpenses catWiseExp={catWiseExp} />
           </>
@@ -396,23 +439,38 @@ function BudgetAnalysis() {
       </div>
       {menuActive === "analysis" && budgetExpenses && budgetExpenses.length ? (
         <div className="flex flex-wrap w-full justify-between">
-          <div className="container bg-white dark:bg-white/5 dark:text-white w-full mx-4 xl:w-[46%] 2xl:w-150 h-90 flex flex-col rounded-md shadow-md my-4">
-            <div className="rounded-md h-10 p-2 border-b border-b-slate-100 dark:border-b-slate-700 flex justify-between w-full font-bold hover:bg-slate-50 dark:hover:bg-white/1">
-              <span className="w-[20%] text-center">Date</span>
-              <span className="w-[20%] text-center">Description</span>
-              <span className="w-[20%] text-center">Category</span>
-              <span className="w-[20%] text-center">Price</span>
+          <div className="overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] scrollbar-none container bg-white dark:bg-white/5 dark:text-white w-full mx-4 xl:w-[46%] 2xl:w-150 h-90 flex flex-col rounded-md shadow-md my-4">
+            <div className="rounded-md h-10 p-2 border-b border-b-slate-100 dark:border-b-slate-700 flex justify-between w-140 sm:w-full font-bold hover:bg-slate-50 dark:hover:bg-white/1">
+              <span className="min-w-[20%] text-center cursor-pointer" onClick={() => changeInteractiveState("date")}>
+                Date
+                {interactiveSort.date === 1 && <i className="fa-solid fa-arrow-down"></i>}
+                {interactiveSort.date === 2 && <i className="fa-solid fa-arrow-up"></i>}
+              </span>
+              <span className="min-w-[20%] text-center cursor-pointer" onClick={() => changeInteractiveState("description")}>
+                Description
+                {interactiveSort.description === 1 && <i className="fa-solid fa-arrow-down"></i>}
+                {interactiveSort.description === 2 && <i className="fa-solid fa-arrow-up"></i>}
+              </span>
+              <span className="min-w-[20%] text-center cursor-pointer" onClick={() => changeInteractiveState("category")}>
+                Category
+                {interactiveSort.category === 1 && <i className="fa-solid fa-arrow-down"></i>}
+                {interactiveSort.category === 2 && <i className="fa-solid fa-arrow-up"></i>}
+              </span>
+              <span className="min-w-[20%] text-center cursor-pointer" onClick={() => changeInteractiveState("price")}>
+                Price
+                {interactiveSort.price === 1 && <i className="fa-solid fa-arrow-down"></i>}
+                {interactiveSort.price === 2 && <i className="fa-solid fa-arrow-up"></i>}
+              </span>
             </div>
-
-            <div className="flex-1 overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] scrollbar-none">
-              {budgetExpenses.map((budgetExpense) => {
+            <div className="flex-1 w-140 sm:w-full overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] scrollbar-none">
+              {sorter(budgetExpenses, interactiveSort).map((budgetExpense) => {
                 return (
                   <div
                     key={budgetExpense._id}
                     className="rounded-md min-h-10 p-2 border-b border-b-slate-100 dark:border-b-slate-700 flex justify-between w-full hover:bg-slate-50 dark:hover:bg-white/1"
                   >
                     <span className="w-[20%] text-center">
-                      {displayDate(budgetExpense.date.slice(0, 10))}
+                      {displayDate(budgetExpense.date.toLocaleString().slice(0, 10), 2)}
                     </span>
                     <span className="w-[20%] text-center">
                       {budgetExpense.description}
@@ -421,7 +479,7 @@ function BudgetAnalysis() {
                       {budgetExpense.category.name}
                     </span>
                     <span className="w-[20%] text-center">
-                      {budgetExpense.price}
+                      ₹{budgetExpense.price.toLocaleString()}
                     </span>
                   </div>
                 );

@@ -16,6 +16,7 @@ function Sidebar({openSideBar, setOpenSideBar}) {
   return (
     <>
       <div className='hidden md:block md:w-[25%] md:h-full pt-4 dark:bg-white/5 dark:text-slate-100'>
+        <SidebarLinks path="home" content="Home" />
         <SidebarLinks path="dashboard" content="Dashboard" />
         <SidebarLinks path="expenses" content="Add Expense" />
         <SidebarLinks path="list" content="View Expenses" />
@@ -24,6 +25,7 @@ function Sidebar({openSideBar, setOpenSideBar}) {
         <SidebarLinks path="budgetlist" content="View Budgets" />
       </div>
       {openSideBar && <div className='block w-[60%] sm:w-[40%] md:hidden h-full bg-white absolute top-0 z-10 left-0 pt-20 dark:bg-blue-950 dark:text-slate-100'>
+        <SidebarLinks path="home" content="Home" />
         <SidebarLinks path="dashboard" content="Dashboard" />
         <SidebarLinks path="profile" content="Profile" />
         <SidebarLinks path="expenses" content="Add Expense" />

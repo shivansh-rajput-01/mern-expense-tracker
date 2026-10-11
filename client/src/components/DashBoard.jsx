@@ -102,7 +102,7 @@ function DashBoard() {
                 {lastThree && weekDayAverage(lastThree, "chart").map((ele, idx) => (
                   <div key={idx} className='min-h-10 p-1 border-b border-b-slate-200 dark:border-b-slate-700 hover:bg-slate-50 dark:hover:bg-white/1 flex justify-between'>
                     <span className='w-1/3 text-center'>{ele.dayName}</span>
-                    <span className='w-1/3 text-center'>₹{ele.dayAverage.toLocaleString()}</span>
+                    <span className='w-1/3 text-center'>₹{ele.dayAverage.toFixed(1).toLocaleString()}</span>
                     <span className='w-1/3 text-center'>{ele.expenses}</span>
                   </div>
                 ))}
