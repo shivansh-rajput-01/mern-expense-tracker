@@ -14,6 +14,7 @@ const Category = require("./models/category.js");
 const Expense = require("./models/expense.js");
 const Budget = require("./models/budget.js");
 const BudgetCategory = require("./models/categoryBudget.js");
+const createBulkData = require("./utils/BulkData.js");
 
 app.use(cors({ origin: "http://localhost:5173", credentials: true }));
 app.use(express.json());
@@ -274,6 +275,26 @@ app.post("/expense", isLoggedIn, async (req, res) => {
   return res.status(200).json({
     success: true,
     message: "expense added successfully",
+  });
+});
+
+app.post("/expenses/bulk", isLoggedIn, async (req, res) => {
+  console.log("request received");
+  const {data} = req.body;
+  const user = await User.findOne({username: req.user.username});
+  if(!user) {
+    return res.status(400).json({
+      success: false,
+      message: "invalid user"
+    });
+  }
+  const userBudgets = await Budget.find({owner: user._id});
+  const insertData = createBulkData(data, userBudgets, user._id);
+  await Expense.insertMany(insertData);
+  return res.status(200).json({
+    success: true,
+    message: "saved succesfully",
+    data: insertData
   });
 });
 
