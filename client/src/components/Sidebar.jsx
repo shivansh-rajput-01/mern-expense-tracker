@@ -6,7 +6,7 @@ import handleLogout from '../utils/Logout';
 import authContext from '../contexts/authContext';
 
 function Sidebar({openSideBar, setOpenSideBar}) {
-  const { userData } = useContext(dashContext);
+  const { userData, setCalc } = useContext(dashContext);
   const {setUsername, setLoading} = useContext(authContext);
   const navigate = useNavigate();
   function handler(){
@@ -23,6 +23,7 @@ function Sidebar({openSideBar, setOpenSideBar}) {
         {userData.role === "admin" && <SidebarLinks path="category" content="Add Category" />}
         <SidebarLinks path="budget" content="Create Budget" />
         <SidebarLinks path="budgetlist" content="View Budgets" />
+        <div className="w-full block p-2 text-center hover:bg-slate-100 dark:hover:bg-slate-800" onClick={() => setCalc(true)}>Calculator</div>
       </div>
       {openSideBar && <div className='block w-[60%] sm:w-[40%] md:hidden h-full bg-white absolute top-0 z-10 left-0 pt-20 dark:bg-blue-950 dark:text-slate-100'>
         <SidebarLinks path="home" content="Home" />
@@ -33,6 +34,7 @@ function Sidebar({openSideBar, setOpenSideBar}) {
         {userData.role === "admin" && <SidebarLinks path="category" content="Add Category" />}
         <SidebarLinks path="budget" content="Create Budget" />
         <SidebarLinks path="budgetlist" content="View Budgets" />
+        <div className="w-full block p-2 text-center hover:bg-slate-100 dark:hover:bg-slate-800" onClick={() => setCalc(true)}>Calculator</div>
         <button className='text-red-500 w-full text-center my-4' onClick={handler}><i className="fa-solid fa-right-from-bracket text-red-500"></i>Logout</button>
       </div>}
     </>

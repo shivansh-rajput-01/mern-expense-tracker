@@ -15,6 +15,8 @@ const Expense = require("./models/expense.js");
 const Budget = require("./models/budget.js");
 const BudgetCategory = require("./models/categoryBudget.js");
 const createBulkData = require("./utils/BulkData.js");
+const sendVerificationEmail = require("./utils/sendEmail.js");
+const genOtp = require("./utils/genOtp.js");
 
 app.use(cors({ origin: "http://localhost:5173", credentials: true }));
 app.use(express.json());
@@ -151,6 +153,41 @@ app.post("/logout", isLoggedIn, (req, res) => {
   });
 });
 
+app.get("/verify", isLoggedIn, async (req, res) => {
+  try {
+    const user = await User.findOne({username: req.user.username});
+
+    if(!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found"
+      });
+    }
+
+    const otp = genOtp(6);
+    const expiry = Date.now() + (2 * 60 * 1000);
+    console.log(expiry);
+    user.verificationToken = otp;
+    user.verificationTokenExpires = new Date(expiry);
+    await user.save();
+    console.log("sending mail");
+    const result = await sendVerificationEmail(user.email, otp);
+    if(result) {
+      return res.status(200).json({
+        success: true,
+        message: "Verification otp sended successfully to your email"
+      });
+    }
+
+  } catch (err) {
+    console.log("verification error", err);
+    return res.status(500).json({
+      success: false,
+      message: "Error in sending verification email"
+    });
+  }
+});
+
 app.post("/userinfo", isLoggedIn, async (req, res) => {
   console.log("userinfo", req.body);
   let { username } = req.body;
@@ -163,6 +200,7 @@ app.post("/userinfo", isLoggedIn, async (req, res) => {
         role: user.role,
         email: user.email,
         id: user._id.toString(),
+        isVerified: user.isVerified
       },
     });
   }

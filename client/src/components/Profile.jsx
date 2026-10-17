@@ -4,6 +4,7 @@ import authContext from "../contexts/authContext";
 import dashContext from "../contexts/dashContext";
 import { useState } from "react";
 import axios from "axios";
+import { NavLink } from "react-router-dom";
 
 function Profile() {
   const { username, setUsername } = useContext(authContext);
@@ -132,7 +133,7 @@ function Profile() {
         <div className="name my-2 text-2xl">{username}</div>
         <div className="role text-lg">Role: {userData.role}</div>
       </div>
-      <div className="personal-info flex flex-col md:flex-row justify-around">
+      <div className="personal-info flex flex-col lg:flex-row justify-around">
         <div className="direct w-[90%] mx-auto my-4 md:my-1 md:w-[45%] bg-white rounded-md shadow-sm dark:bg-white/5 min-h-90 relative">
           <div className="heading h-16 border-b flex items-center px-4 border-b-slate-100 dark:border-b-slate-700">
             User Profile Details
@@ -146,10 +147,12 @@ function Profile() {
                 </div>
               </div>
               <div className="info">
-                <div className="sub-info mx-auto w-[90%] my-2">Email</div>
-                <div className="actual-data border border-slate-700 dark:border-slate-100 mx-auto rounded-md h-10 flex items-center px-4 w-[90%]">
+                <div className={`sub-info mx-auto w-[90%] my-2 ${!userData.isVerified? "text-red-400": ""}`}>Email</div>
+                <div className={`actual-data border mx-auto rounded-md h-10 flex items-center px-4 w-[90%] ${!userData.isVerified? "border-red-400": "border-slate-700 dark:border-slate-100"}`}>
                   {userData.email}
                 </div>
+                {!userData.isVerified && <div className="w-[90%] mx-auto text-red-400">Email not verified</div>}
+                {!userData.isVerified && <div className="w-[90%] mx-auto"><NavLink to="/verify"><button className="w-16 h-8 rounded-sm bg-slate-700 text-white">Verify</button></NavLink></div>}
               </div>
             </>
           )}

@@ -1,17 +1,19 @@
 import React, { useContext, useState } from 'react'
-import { Navigate, Outlet } from 'react-router-dom'
+import { Navigate, NavLink, Outlet } from 'react-router-dom'
 import authContext from '../contexts/authContext'
 import Sidebar from './Sidebar';
 import DashNav from './DashNav';
 import dashContext from '../contexts/dashContext';
 import axios from "axios"
+import DraggablePanel from './DraggablePanel';
 
 function DashBoardLayout() {
     const { username, loading } = useContext(authContext);
-    const {del, setDel, setCategory} = useContext(dashContext);
+    const {del, setDel, setCategory, userData, calc, setCalc} = useContext(dashContext);
     let [message, setMessage] = useState("");
     let [error, setError] = useState("");
     let [openSideBar, setOpenSideBar] = useState(false);
+    let [closed, setClosed] = useState(false);
 
     if(loading){
         return (
@@ -72,8 +74,26 @@ function DashBoardLayout() {
                         </div>
                     )
                 }
+                {
+                    !userData.isVerified && !closed && (
+                        <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-1000">
+                        <div className="del-box flex flex-col w-80 sm:w-100 min-h-40 p-8 bg-white rounded-md relative">
+                            <i
+                            className="fa-solid fa-xmark absolute top-3 right-2 text-slate-500"
+                            onClick={() => setClosed(true)}
+                            ></i>
+                            <div className="text-center text-2xl my-4">Email not verified yet!</div>
+                            <div>Verify email now. If not verified you may not be able to access your account in case you forgot password</div>
+                            <div className="my-4 flex justify-center">
+                                <NavLink to="/verify" onClick={() => setClosed(true)}><button className='w-20 h-10 p-2 rounded-sm border border-slate-700 hover:bg-slate-700 hover:text-white'>Verify</button></NavLink>
+                            </div>
+                        </div>
+                        </div>
+                    )
+                }
                 <DashNav openSideBar={openSideBar} setOpenSideBar={setOpenSideBar} />
                 <div className="relative main flex w-full pt-16 h-screen">
+                    {calc && <DraggablePanel />}
                     <Sidebar openSideBar={openSideBar} setOpenSideBar={setOpenSideBar}/>
                     <Outlet context={{message, setMessage}}/>
                 </div>

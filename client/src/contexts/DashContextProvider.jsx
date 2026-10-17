@@ -11,6 +11,7 @@ function DashContextProvider({ children }) {
   let [admin, setAdmin] = useState("");
   let [del, setDel] = useState("");
   let [budget, setBudget] = useState("");
+  let [calc, setCalc] = useState(false);
   let [darkMode, setDarkMode] = useState(() => {
     const saved = localStorage.getItem("theme");
     if(saved) {
@@ -83,7 +84,7 @@ function DashContextProvider({ children }) {
   }, [darkMode]);
 
   return (
-    <dashContext.Provider value={{ userData, setUserData, category, setCategory, admin, del, setDel, budget, setBudget, darkMode, setDarkMode }}>
+    <dashContext.Provider value={{ userData, setUserData, category, setCategory, admin, del, setDel, budget, setBudget, darkMode, setDarkMode, calc, setCalc }}>
       {children}
     </dashContext.Provider>
   )

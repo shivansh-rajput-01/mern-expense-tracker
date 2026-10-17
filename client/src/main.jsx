@@ -16,6 +16,7 @@ import Budget from './components/Budget.jsx'
 import BudgetList from './components/BudgetList.jsx'
 import BudgetAnalysis from './components/BudgetAnalysis.jsx'
 import Profile from './components/Profile.jsx'
+import VerifyEmail from './components/VerifyEmail.jsx'
 
 const router = createBrowserRouter([
   {
@@ -71,6 +72,10 @@ const router = createBrowserRouter([
       {
         path: "profile",
         element: <Profile />
+      },
+      {
+        path: "verify",
+        element: <VerifyEmail />
       }
     ]
   }
